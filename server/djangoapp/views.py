@@ -1,3 +1,4 @@
+import os
 import json
 import logging
 from django.shortcuts import render, get_object_or_404
@@ -85,6 +86,15 @@ def registration(request):
 
 def get_dealerships(request, state="all"):
     ensure_db_initialized()
+    dealers_json_file = os.path.join(os.path.dirname(__file__), 'data', 'dealerships.json')
+    if (request.path.endswith('fetchDealers') or request.path.endswith('fetchDealers/')) and os.path.exists(dealers_json_file):
+        try:
+            with open(dealers_json_file, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                return JsonResponse(data.get('dealerships', []), safe=False)
+        except Exception as e:
+            logger.error(f"Error loading dealerships.json: {e}")
+
     if state == "all" or not state:
         dealerships = Dealership.objects.all()
     else:
@@ -212,16 +222,16 @@ def get_cars(request):
     return JsonResponse({"CarModels": cars_list})
 
 @csrf_exempt
-def analyze_review_view(request):
-    text = ""
-    if request.method == "POST":
-        try:
-            data = json.loads(request.body)
-            text = data.get("text", "")
-        except Exception:
-            text = request.POST.get("text", "")
-    else:
-        text = request.GET.get("text", "")
+def analyze_review_view(request, text=""):
+    if not text:
+        if request.method == "POST":
+            try:
+                data = json.loads(request.body)
+                text = data.get("text", "")
+            except Exception:
+                text = request.POST.get("text", "")
+        else:
+            text = request.GET.get("text", "")
 
     sentiment = analyze_text_sentiment(text)
     return JsonResponse({

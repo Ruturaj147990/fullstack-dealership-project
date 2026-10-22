@@ -18,9 +18,20 @@ def frontend_index(request, *args, **kwargs):
             return HttpResponse(f.read(), content_type='text/html')
     return HttpResponse("<h1>Cars Dealership Application</h1>", content_type='text/html')
 
+from djangoapp import views as djangoapp_views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('djangoapp/', include('djangoapp.urls')),
+
+    # Direct Capstone Endpoints
+    path('fetchDealers', djangoapp_views.get_dealerships, name='fetch_dealers'),
+    path('fetchDealers/', djangoapp_views.get_dealerships, name='fetch_dealers_slash'),
+    path('fetchDealer/<int:dealer_id>', djangoapp_views.get_dealer_details, name='fetch_dealer_by_id'),
+    path('fetchDealer/<int:dealer_id>/', djangoapp_views.get_dealer_details, name='fetch_dealer_by_id_slash'),
+    path('fetchReviews/dealer/<int:dealer_id>', djangoapp_views.get_dealer_reviews, name='fetch_reviews_dealer'),
+    path('fetchReviews/dealer/<int:dealer_id>/', djangoapp_views.get_dealer_reviews, name='fetch_reviews_dealer_slash'),
+    path('analyze/<str:text>', djangoapp_views.analyze_review_view, name='analyze_review_get'),
     
     # Static HTML pages
     path('static/About.html', TemplateView.as_view(template_name='About.html'), name='about_static'),
