@@ -1,0 +1,124 @@
+.register_container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 160px);
+  padding: 2rem 1rem;
+}
+
+.register_card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 2.5rem;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+}
+
+.register_title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.35rem;
+  text-align: center;
+}
+
+.register_subtitle {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-bottom: 1.75rem;
+}
+
+.register_alert {
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.alert_success {
+  background-color: rgba(34, 197, 94, 0.15);
+  border: 1px solid #22c55e;
+  color: #4ade80;
+}
+
+.alert_error {
+  background-color: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #f87171;
+}
+
+.register_form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form_group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form_group label {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.form_group input {
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #ffffff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.form_group input:focus {
+  border-color: #38bdf8;
+}
+
+.register_btn {
+  background-color: #0284c7;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.register_btn:hover:not(:disabled) {
+  background-color: #0369a1;
+}
+
+.register_btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.register_footer {
+  text-align: center;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.register_footer a {
+  color: #38bdf8;
+  text-decoration: none;
+}
+
+.register_footer a:hover {
+  text-decoration: underline;
+}

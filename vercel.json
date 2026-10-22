@@ -1,0 +1,23 @@
+{
+  "version": 2,
+  "buildCommand": "cd server/frontend && npm install && npm run build",
+  "outputDirectory": "server/frontend/build",
+  "rewrites": [
+    {
+      "source": "/djangoapp/:path*",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/admin/:path*",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/static/:path*",
+      "destination": "/static/:path*"
+    },
+    {
+      "source": "/((?!api/|djangoapp/|admin/|static/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}
