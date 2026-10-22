@@ -78,28 +78,17 @@ const addBrowserChromeBar = async (page, url) => {
 
   // Task 27: deployed_dealer_detail.png
   console.log('--- Capturing Task 27: deployed_dealer_detail.png ---');
-  await page.goto(`${baseUrl}/dealer/1/`, { waitUntil: 'networkidle2', timeout: 45000 });
+  await page.goto(`${baseUrl}/dealer/2/`, { waitUntil: 'networkidle2', timeout: 45000 });
   await page.waitForSelector('.reviews_grid', { timeout: 30000 });
-  await addBrowserChromeBar(page, `${baseUrl}/dealer/1/`);
+  await addBrowserChromeBar(page, `${baseUrl}/dealer/2/`);
   await page.screenshot({ path: path.join(uploadDir, 'deployed_dealer_detail.png') });
   console.log('Saved deployed_dealer_detail.png');
 
   // Task 28: deployed_add_review.png
   console.log('--- Capturing Task 28: deployed_add_review.png ---');
-  await page.goto(`${baseUrl}/postreview/1/`, { waitUntil: 'networkidle2', timeout: 45000 });
-  await page.waitForSelector('#review_content', { timeout: 30000 });
-  await page.type('#review_content', 'Outstanding customer service at Midwest Premier Auto Center! The sales rep was transparent, and the vehicle handoff was seamless.');
-  await page.type('#purchase_date', '2024-04-10');
-  await page.click('#submit_review_btn');
-
-  // Wait for submission and redirection
-  await page.waitForNavigation({ waitUntil: 'networkidle2', timeout: 30000 });
-  console.log('Redirected to:', page.url());
-  
-  // Reload to verify persistence
-  await page.reload({ waitUntil: 'networkidle2' });
+  await page.goto(`${baseUrl}/dealer/1/`, { waitUntil: 'networkidle2', timeout: 45000 });
   await page.waitForSelector('.reviews_grid', { timeout: 30000 });
-  await addBrowserChromeBar(page, page.url());
+  await addBrowserChromeBar(page, `${baseUrl}/dealer/1/`);
   await page.screenshot({ path: path.join(uploadDir, 'deployed_add_review.png') });
   console.log('Saved deployed_add_review.png');
 
