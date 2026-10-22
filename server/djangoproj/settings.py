@@ -65,7 +65,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'djangoproj.wsgi.application'
 ASGI_APPLICATION = 'djangoproj.asgi.application'
 
-# Database configuration: Use DATABASE_URL if available, otherwise SQLite
+# Database configuration: Use DATABASE_URL if available, otherwise SQLite (use /tmp on Vercel)
 database_url = os.environ.get('DATABASE_URL')
 if database_url:
     DATABASES = {
@@ -76,10 +76,12 @@ if database_url:
         )
     }
 else:
+    is_vercel = bool(os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME'))
+    db_file = Path('/tmp/db.sqlite3') if is_vercel else BASE_DIR / 'db.sqlite3'
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
+            'NAME': db_file,
         }
     }
 
@@ -96,7 +98,7 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = Path('/tmp/staticfiles') if (os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME')) else BASE_DIR / 'staticfiles'
 
 STATICFILES_DIRS = [
     BASE_DIR / 'frontend' / 'static',
