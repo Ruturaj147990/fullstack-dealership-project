@@ -5,13 +5,30 @@ from django.http import JsonResponse, HttpResponse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
+from django.db import connection
+from django.core.management import call_command
 from .models import CarMake, CarModel, Dealership, DealerReview
 from .sentiment import analyze_text_sentiment
 
 logger = logging.getLogger(__name__)
 
+def ensure_db_initialized():
+    try:
+        tables = connection.introspection.table_names()
+        if 'djangoapp_dealership' not in tables:
+            call_command('migrate', interactive=False)
+            from .populate import initiate
+            initiate()
+            if not User.objects.filter(username='root').exists():
+                User.objects.create_superuser('root', 'root@example.com', 'RootPass123!@#')
+            if not User.objects.filter(username='demo_user').exists():
+                User.objects.create_user('demo_user', 'demo@example.com', 'DemoUserPass123!')
+    except Exception as e:
+        logger.error(f"Error in ensure_db_initialized: {e}")
+
 @csrf_exempt
 def login_user(request):
+    ensure_db_initialized()
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -36,6 +53,7 @@ def logout_request(request):
 
 @csrf_exempt
 def registration(request):
+    ensure_db_initialized()
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -66,6 +84,7 @@ def registration(request):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def get_dealerships(request, state="all"):
+    ensure_db_initialized()
     if state == "all" or not state:
         dealerships = Dealership.objects.all()
     else:
@@ -88,6 +107,7 @@ def get_dealerships(request, state="all"):
     return JsonResponse(dealers_list, safe=False)
 
 def get_dealer_details(request, dealer_id):
+    ensure_db_initialized()
     try:
         d = Dealership.objects.get(id=dealer_id)
         return JsonResponse({
@@ -106,6 +126,7 @@ def get_dealer_details(request, dealer_id):
         return JsonResponse({"error": "Dealership not found"}, status=404)
 
 def get_dealer_reviews(request, dealer_id):
+    ensure_db_initialized()
     reviews = DealerReview.objects.filter(dealer_id=dealer_id).order_by('-id')
     reviews_list = []
     for r in reviews:
@@ -126,6 +147,7 @@ def get_dealer_reviews(request, dealer_id):
 
 @csrf_exempt
 def add_review(request):
+    ensure_db_initialized()
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -177,11 +199,7 @@ def add_review(request):
     return JsonResponse({"error": "Method not allowed"}, status=405)
 
 def get_cars(request):
-    if CarMake.objects.count() == 0:
-        # Populate if empty
-        from .populate import initiate
-        initiate()
-
+    ensure_db_initialized()
     car_models = CarModel.objects.select_related('car_make').all()
     cars_list = []
     for cm in car_models:
